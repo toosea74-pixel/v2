@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>푹자고싶을때 — 내 단계 찾기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --green-50: #EAF3DE; --green-600: #3B6D11;
+  --blue-50: #E6F1FB;  --blue-600: #185FA5;
+  --amber-50: #FAEEDA; --amber-600: #854F0B;
+  --pink-50: #FBEAF0;  --pink-600: #993556;
+  --teal-50: #E1F5EE;  --teal-600: #0F6E56;
+  --gray-50: #F7F6F2;  --gray-100: #EFEFEB;
+  --border: rgba(0,0,0,0.09);
+  --text: #1a1a18; --text-muted: #5e5e5b;
+  --radius-sm: 8px; --radius-md: 12px;
+}
+body { font-family: 'Noto Sans KR', sans-serif; background: #fafaf8; color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+.page { max-width: 680px; margin: 0 auto; padding: 2.5rem 1.25rem 5rem; }
+
+.hero { padding: 1rem 0 2.5rem; border-bottom: 0.5px solid var(--border); margin-bottom: 2.5rem; }
+.hero-label { font-size: 11px; letter-spacing: .12em; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase; }
+.hero-title { font-size: 28px; font-weight: 500; color: var(--text); margin-bottom: 12px; line-height: 1.3; }
+.hero-sub { font-size: 15px; color: var(--text-muted); line-height: 1.85; max-width: 540px; }
+.hero-sub strong { color: var(--text); font-weight: 500; }
+
+.section { margin-bottom: 2.5rem; }
+.section-label { font-size: 11px; letter-spacing: .1em; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; }
+.section-title { font-size: 18px; font-weight: 500; color: var(--text); margin-bottom: 14px; line-height: 1.4; }
+.divider { border: none; border-top: 0.5px solid var(--border); margin: 2.5rem 0; }
+
+/* Ingredient cards */
+.ingredient-cards { display: flex; flex-direction: column; gap: 10px; }
+.icard { background: #fff; border: 0.5px solid var(--border); border-radius: var(--radius-md); overflow: hidden; }
+.icard-head { display: flex; align-items: center; gap: 12px; padding: 1rem 1.25rem .85rem; }
+.icard-icon { font-size: 20px; width: 32px; text-align: center; flex-shrink: 0; }
+.icard-name { font-size: 15px; font-weight: 500; color: var(--text); }
+.icard-sub  { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
+.icard-body { padding: 0 1.25rem 1.1rem; }
+.icard-desc { font-size: 13px; color: var(--text-muted); line-height: 1.75; margin-bottom: 10px; }
+.icard-desc strong { color: var(--text); font-weight: 500; }
+.icard-notice { background: var(--gray-50); border-radius: 6px; padding: .75rem 1rem; font-size: 12px; color: var(--text-muted); line-height: 1.7; margin-top: 8px; }
+.icard-notice strong { color: var(--text); font-weight: 500; }
+.icard-source { font-size: 11px; color: var(--text-muted); opacity: .65; margin-top: 6px; }
+.tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 20px; margin-right: 4px; margin-bottom: 8px; }
+.tag-green { background: var(--green-50); color: var(--green-600); }
+.tag-blue  { background: var(--blue-50);  color: var(--blue-600); }
+.tag-teal  { background: var(--teal-50);  color: var(--teal-600); }
+
+/* Philosophy */
+.philosophy-block { display: flex; flex-direction: column; gap: 10px; }
+.phil-row { background: #fff; border: 0.5px solid var(--border); border-radius: var(--radius-md); padding: 1.1rem 1.25rem; display: flex; gap: 14px; align-items: flex-start; }
+.phil-num { font-size: 11px; font-weight: 500; color: var(--text-muted); min-width: 18px; margin-top: 3px; flex-shrink: 0; }
+.phil-title { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+.phil-desc { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
+.phil-desc strong { color: var(--text); font-weight: 500; }
+
+/* Product cards */
+.products { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.pcard { background: #fff; border: 0.5px solid var(--border); border-radius: var(--radius-md); padding: 1.1rem 1.15rem; transition: box-shadow .2s; }
+.pcard:hover { box-shadow: 0 2px 14px rgba(0,0,0,.07); }
+.badge { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; margin-bottom: 10px; }
+.b1 { background: var(--green-50); color: var(--green-600); }
+.b2 { background: var(--blue-50);  color: var(--blue-600); }
+.b3 { background: var(--amber-50); color: var(--amber-600); }
+.b4 { background: var(--pink-50);  color: var(--pink-600); }
+.pname { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+.ptag  { font-size: 12px; color: var(--text-muted); line-height: 1.6; margin-bottom: 10px; }
+.prow  { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-top: 0.5px solid var(--border); gap: 6px; }
+.plabel { font-size: 12px; color: var(--text-muted); white-space: nowrap; }
+.pval   { font-size: 12px; font-weight: 500; color: var(--text); text-align: right; }
+.pval.up   { color: var(--green-600); }
+.pval.same { color: #888780; }
+
+.callout { background: var(--green-50); border-radius: var(--radius-md); padding: 1.2rem 1.4rem; font-size: 14px; color: var(--green-600); line-height: 1.85; }
+.callout strong { font-weight: 500; }
+
+/* Quiz */
+.trail { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 1rem; min-height: 22px; }
+.trail-item { font-size: 12px; color: var(--text); font-weight: 500; }
+.trail-sep  { font-size: 12px; color: var(--text-muted); }
+.qcard { background: var(--gray-50); border: 0.5px solid var(--border); border-radius: var(--radius-md); padding: 1.5rem 1.5rem 1.25rem; animation: fadeUp .2s ease; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+.qstep { font-size: 11px; color: var(--text-muted); letter-spacing: .08em; margin-bottom: 8px; }
+.qtext { font-size: 16px; font-weight: 500; color: var(--text); line-height: 1.6; margin-bottom: 1.25rem; }
+.qbtns { display: flex; gap: 10px; }
+.qbtn { flex:1; padding:12px 8px; font-size:14px; font-weight:500; font-family:'Noto Sans KR',sans-serif; border-radius:var(--radius-sm); cursor:pointer; border:none; transition:opacity .15s, transform .1s; }
+.qbtn:active { transform: scale(.97); }
+.qbtn-yes { background: var(--green-50); color: var(--green-600); }
+.qbtn-yes:hover { opacity: .82; }
+.qbtn-no  { background: var(--blue-50);  color: var(--blue-600); }
+.qbtn-no:hover  { opacity: .82; }
+
+.result-card { background: #fff; border: 0.5px solid var(--border); border-radius: var(--radius-md); padding: 1.5rem; animation: fadeUp .25s ease; }
+.result-title { font-size: 20px; font-weight: 500; color: var(--text); margin-bottom: 6px; margin-top: 8px; }
+.result-desc  { font-size: 14px; color: var(--text-muted); line-height: 1.8; margin-bottom: 1.25rem; }
+.result-tips  { list-style: none; }
+.result-tips li { font-size: 13px; color: var(--text-muted); padding: 7px 0 7px 1rem; border-top: 0.5px solid var(--border); line-height: 1.65; position: relative; }
+.result-tips li:first-child { border-top: none; }
+.result-tips li::before { content:"→"; position:absolute; left:0; font-weight:500; }
+.reset-btn { margin-top:1.25rem; width:100%; padding:12px; font-size:14px; font-family:'Noto Sans KR',sans-serif; background:transparent; border:0.5px solid var(--border); border-radius:var(--radius-sm); color:var(--text-muted); cursor:pointer; transition:background .15s; }
+.reset-btn:hover { background: var(--gray-50); }
+
+.footer { margin-top:4rem; padding-top:1.5rem; border-top:0.5px solid var(--border); font-size:12px; color:var(--text-muted); line-height:1.9; }
+
+@media (max-width: 480px) {
+  .products { grid-template-columns: 1fr; }
+  .hero-title { font-size: 24px; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-label">자연드림 수면 음료 라인</div>
+    <div class="hero-title">푹자고싶을때 1·2·3·4</div>
+    <div class="hero-sub">
+      불면에는 저마다의 이유가 있습니다.
+      오랜 기간 수면에 어려움을 겪어온 분과 최근 들어 수면 리듬이 흐트러진 분은
+      몸의 상태가 다릅니다.
+      자연드림은 이 차이를 고려해
+      <strong>개인 수면 상태에 맞게 원료 배합을 4단계로 세분화</strong>했습니다.
+    </div>
+  </div>
+
+  <!-- 원료 일반 설명 -->
+  <div class="section">
+    <div class="section-label">수면과 원료</div>
+    <div class="section-title">숙면에 관여하는 세 가지 원료</div>
+    <p style="font-size:13px;color:var(--text-muted);line-height:1.75;margin-bottom:16px">
+      아래 내용은 원료 자체에 대한 일반적인 학술·영양 정보입니다. 이 제품의 특정 효능을 설명하는 것이 아닙니다.
+    </p>
+    <div class="ingredient-cards">
+
+      <!-- GABA -->
+      <div class="icard">
+        <div class="icard-head">
+          <div class="icard-icon">🔬</div>
+          <div>
+            <div class="icard-name">가바 (GABA, 감마아미노부티르산)</div>
+            <div class="icard-sub">억제성 신경전달물질 · 아미노산의 일종</div>
+          </div>
+        </div>
+        <div class="icard-body">
+          <div class="tag tag-green">체내 자연 합성</div>
+          <div class="tag tag-blue">식품으로도 섭취 가능</div>
+          <div class="icard-desc">
+            가바는 뇌와 중추신경계에 존재하는 억제성 신경전달물질입니다.
+            신경세포가 과도하게 흥분하지 않도록 조절하는 역할을 하며,
+            체내에서 자연적으로 합성되는 물질입니다.<br><br>
+            참고로, 일반적으로 처방되는 수면제(벤조디아제핀계, 졸피뎀 등)의
+            주요 작용 기전은 뇌의 가바 수용체를 활성화하는 것입니다.
+            이를 장기간 반복하면 수용체가 해당 자극에 점차 둔감해지는 것으로
+            알려져 있습니다.
+          </div>
+          <div class="icard-notice">
+            <strong>합성가바 vs 발효가바</strong><br>
+            가바는 제조 방식에 따라 합성가바와 발효가바로 나뉩니다.
+            합성가바는 가격이 저렴하지만 제조 과정에서 유독성 화학물질이 사용되며 순도가 낮습니다.
+            발효가바는 유산균을 베이스로 한 효소 공법으로 만들어져 안전성이 높고 흡수율이 뛰어납니다.
+            가격은 합성가바 대비 약 6배 높습니다.
+            <div class="icard-source">출처: 환경일보, 2020.06.15.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 트립토판 → 멜라토닌 -->
+      <div class="icard">
+        <div class="icard-head">
+          <div class="icard-icon">🌙</div>
+          <div>
+            <div class="icard-name">트립토판 → 세로토닌 → 멜라토닌</div>
+            <div class="icard-sub">필수 아미노산 · 수면 호르몬 전구물질 경로</div>
+          </div>
+        </div>
+        <div class="icard-body">
+          <div class="tag tag-teal">필수 아미노산 — 식품으로만 섭취 가능</div>
+          <div class="icard-desc">
+            트립토판은 체내에서 합성되지 않아 반드시 식품으로 섭취해야 하는 필수 아미노산입니다.
+            섭취된 트립토판은 세로토닌(행복 호르몬)을 거쳐 멜라토닌으로 전환됩니다.<br><br>
+            멜라토닌은 흔히 '수면 호르몬'으로 불리지만, 실제 핵심 역할은
+            잠을 직접 유발하는 것이 아니라 몸이 "지금 잘 시간"임을 인식하도록
+            <strong>생체시계를 조율하는 분위기 조성</strong>에 가깝습니다.
+            저녁에 빛이 줄어들면 분비가 증가하며, 수면 타이밍을 결정하는 핵심 신호입니다.
+          </div>
+          <div class="icard-notice">
+            <strong>현대인에게 부족한 건 트립토판보다 가바 전구물질입니다</strong><br>
+            동물성 단백질(멸치, 닭고기, 달걀, 치즈 등)에 트립토판이 풍부하게 들어 있어
+            현대 식생활에서 트립토판 부족으로 인한 불면을 겪는 경우는 드뭅니다.
+            오히려 가바의 전구물질인 글루탐산(다시마, 토마토 등)과
+            비타민 B6(바나나, 현미 등)가 부족한 경우가 더 많습니다.
+          </div>
+        </div>
+      </div>
+
+      <!-- 마그네슘 -->
+      <div class="icard">
+        <div class="icard-head">
+          <div class="icard-icon">💧</div>
+          <div>
+            <div class="icard-name">마그네슘</div>
+            <div class="icard-sub">필수 미네랄 · 300가지 이상의 체내 효소 반응에 관여</div>
+          </div>
+        </div>
+        <div class="icard-body">
+          <div class="icard-desc">
+            마그네슘은 신경과 근육 기능 유지에 필요한 필수 미네랄입니다.
+            현대인에게 부족하기 쉬운 미네랄 중 하나로,
+            가바 수용체 기능과도 연관이 있는 것으로 알려져 있습니다.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 제품 설계 -->
+  <div class="section">
+    <div class="section-label">제품 설계</div>
+    <div class="section-title">왜 4단계로 나눴는가</div>
+    <div class="philosophy-block">
+      <div class="phil-row">
+        <div class="phil-num">01</div>
+        <div>
+          <div class="phil-title">수면 상태의 차이를 배합의 기준으로 삼았습니다</div>
+          <div class="phil-desc">
+            오랜 기간 수면에 어려움을 겪어온 분과 최근 들어 수면 리듬이 흐트러진 분은
+            몸의 상태가 다릅니다. 하나의 배합으로 모두를 커버하는 방식 대신,
+            <strong>개인 수면 상태에 따라 배합을 4단계로 세분화</strong>했습니다.
+          </div>
+        </div>
+      </div>
+      <div class="phil-row">
+        <div class="phil-num">02</div>
+        <div>
+          <div class="phil-title">수면 상태가 깊을수록 가바 배합을 높였습니다</div>
+          <div class="phil-desc">
+            불면의 기간이 길수록, 그리고 수면 보조제에 의존해온 기간이 길수록
+            몸이 필요로 하는 가바의 양이 달라질 수 있습니다.
+            <strong>3·4단계는 가바 배합 비율을 단계적으로 높여</strong>
+            각자의 상태에 맞게 선택할 수 있도록 설계했습니다.
+          </div>
+        </div>
+      </div>
+      <div class="phil-row">
+        <div class="phil-num">03</div>
+        <div>
+          <div class="phil-title">원료 품질을 타협하지 않았습니다</div>
+          <div class="phil-desc">
+            합성가바 대신 <strong>유산균 발효 공법의 발효가바</strong>를 사용하고,
+            트립토판 계열 원료는 이온미네랄 농법으로 재배한 식물성 원료를 씁니다.
+            베이스도 정제수 대신 마그네슘 강화수를 전 단계에 공통 적용했습니다.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 단계별 배합 -->
+  <div class="section">
+    <div class="section-label">단계별 배합 구성</div>
+    <div class="products">
+      <div class="pcard">
+        <div class="badge b1">1단계</div>
+        <div class="pname">푹자고싶을때 1</div>
+        <div class="ptag">가끔 잠들기 어렵거나<br>뒤척이는 날이 있는 분</div>
+        <div class="prow"><span class="plabel">가바</span><span class="pval">기본 배합</span></div>
+        <div class="prow"><span class="plabel">트립토판 계열</span><span class="pval">넉넉하게 배합</span></div>
+        <div class="prow"><span class="plabel">베이스</span><span class="pval">마그네슘 강화수</span></div>
+      </div>
+      <div class="pcard">
+        <div class="badge b2">2단계</div>
+        <div class="pname">푹자고싶을때 2</div>
+        <div class="ptag">자주 깨거나 깊은 잠을<br>자기 어려운 분</div>
+        <div class="prow"><span class="plabel">가바</span><span class="pval">기본 배합</span></div>
+        <div class="prow"><span class="plabel">트립토판 계열</span><span class="pval">1단계보다 줄임</span></div>
+        <div class="prow"><span class="plabel">베이스</span><span class="pval">마그네슘 강화수</span></div>
+      </div>
+      <div class="pcard">
+        <div class="badge b3">3단계</div>
+        <div class="pname">푹자고싶을때 3</div>
+        <div class="ptag">수면 보조제를 복용한 지<br>1년 미만인 분</div>
+        <div class="prow"><span class="plabel">가바</span><span class="pval up">2단계의 1.5배 ↑</span></div>
+        <div class="prow"><span class="plabel">트립토판 계열</span><span class="pval same">2단계와 동일</span></div>
+        <div class="prow"><span class="plabel">베이스</span><span class="pval">마그네슘 강화수</span></div>
+      </div>
+      <div class="pcard">
+        <div class="badge b4">4단계</div>
+        <div class="pname">푹자고싶을때 4</div>
+        <div class="ptag">수면 보조제를 복용한 지<br>1년 이상인 분</div>
+        <div class="prow"><span class="plabel">가바</span><span class="pval up">2단계의 2배 ↑</span></div>
+        <div class="prow"><span class="plabel">트립토판 계열</span><span class="pval same">2단계와 동일</span></div>
+        <div class="prow"><span class="plabel">베이스</span><span class="pval">마그네슘 강화수</span></div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 후속 케어 -->
+  <div class="section">
+    <div class="callout">
+      자연드림은 구매 후 섭취 경과를 상담으로 모니터링하고,
+      개인 상태에 따라 단계 조정을 안내하는 <strong>후속 케어 시스템</strong>을 함께 운영합니다.
+      제품을 파는 것이 아닌, 수면 습관을 함께 개선하는 것이 목표입니다.
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 퀴즈 -->
+  <div class="section">
+    <div class="section-label">내 단계 찾기</div>
+    <div style="font-size:14px;color:var(--text-muted);line-height:1.8;margin-bottom:1.25rem">
+      예 / 아니오로 답하면 나에게 맞는 단계를 안내해드립니다.
+    </div>
+    <div id="quiz"></div>
+  </div>
+
+  <div class="footer">
+    본 제품은 식품(액상차)으로, 의약품이 아닙니다.<br>
+    질병의 예방·치료를 목적으로 하지 않습니다.<br>
+    수면 보조제 복용 중이신 분은 구매 전 담당 의사와 상담하시기 바랍니다.<br>
+    원료에 관한 설명은 일반적인 학술·영양 정보이며, 이 제품의 특정 효능을 보장하지 않습니다.<br>
+    ⓒ 자연드림 (iCOOP생협)
+  </div>
+
+</div>
+<script>
+const questions=[
+  {id:"q1",text:"현재 처방받은 수면제나 수면유도제를 복용하고 있나요?",yes:"q2",no:"q3"},
+  {id:"q2",text:"수면제·수면유도제를 복용한 기간이 1년이 넘었나요?",yes:{result:4},no:{result:3}},
+  {id:"q3",text:"잠자리에 누워도 잠드는 데 1시간 이상 걸리거나, 밤에 자주 깨서 총 수면 시간이 5시간도 안 되는 날이 자주 있나요?",yes:{result:2},no:"q4"},
+  {id:"q4",text:"잠은 들지만 자다가 한두 번씩 깨거나, 아침에 일어나도 개운하지 않은 날이 일주일에 3일 이상인가요?",yes:{result:2},no:{result:1}}
+];
+const results={
+  1:{badge:"1단계 추천",bg:"#EAF3DE",color:"#3B6D11",name:"푹자고싶을때 1",
+    desc:"수면 리듬이 조금 흐트러진 상태에 맞게 설계된 단계입니다. 트립토판 계열 원료를 넉넉하게 배합해 생체시계 조율에 초점을 맞췄습니다.",
+    tips:["취침 30~60분 전 섭취를 권장합니다","규칙적인 취침·기상 시간을 함께 지키면 더욱 좋습니다","2주 섭취 후 변화가 미미하다면 2단계 상향을 고려해보세요"]},
+  2:{badge:"2단계 추천",bg:"#E6F1FB",color:"#185FA5",name:"푹자고싶을때 2",
+    desc:"자주 깨거나 깊은 잠을 자기 어려운 분께 맞게 설계된 단계입니다. 가바와 트립토판 계열 원료를 균형 있게 배합했습니다.",
+    tips:["취침 30~60분 전 섭취를 권장합니다","가벼운 저녁 산책 등 규칙적인 운동을 병행하면 더욱 좋습니다","변화가 미미할 경우 상담을 통해 섭취량 조정을 안내받으실 수 있습니다"]},
+  3:{badge:"3단계 추천",bg:"#FAEEDA",color:"#854F0B",name:"푹자고싶을때 3",
+    desc:"오랜 기간 수면에 어려움을 겪어온 분을 위해 설계된 단계입니다. 가바 배합을 2단계의 1.5배로 높여 더 깊은 수면 상태에 맞게 구성했습니다.",
+    tips:["수면 보조제 복용 중이신 분은 담당 의사와 상담 후 섭취하시기 바랍니다","규칙적인 운동·식습관 개선을 함께 실천해보세요","상담을 통해 개인 상태에 맞는 섭취 방법을 안내받으실 수 있습니다"]},
+  4:{badge:"4단계 추천",bg:"#FBEAF0",color:"#993556",name:"푹자고싶을때 4",
+    desc:"가장 오랜 기간 수면에 어려움을 겪어온 분을 위해 설계된 단계입니다. 가바 배합을 2단계의 2배로 높여 가장 깊은 수면 상태에 맞게 구성했습니다.",
+    tips:["구매 전 담당 의사 또는 생활치유 상담사와 상담하시기 바랍니다","운동·식이 등 생활습관 개선을 함께 실천하면 더욱 좋습니다","상담을 통해 개인 상태에 맞는 단계별 조정을 안내받으실 수 있습니다"]}
+};
+let history=[],current="q1";
+function getQ(id){return questions.find(q=>q.id===id);}
+function renderTrail(el){
+  if(!history.length)return;
+  const t=document.createElement("div");t.className="trail";
+  history.forEach((h,i)=>{
+    const s=document.createElement("span");s.className="trail-item";s.textContent=`Q${i+1} ${h.ans}`;t.appendChild(s);
+    if(i<history.length-1){const sep=document.createElement("span");sep.className="trail-sep";sep.textContent="›";t.appendChild(sep);}
+  });el.appendChild(t);
+}
+function render(){
+  const el=document.getElementById("quiz");el.innerHTML="";renderTrail(el);
+  if(!current)return;const q=getQ(current);if(!q)return;
+  const card=document.createElement("div");card.className="qcard";
+  card.innerHTML=`<div class="qstep">Q${history.length+1} / 4</div><div class="qtext">${q.text}</div><div class="qbtns"><button class="qbtn qbtn-yes" onclick="answer(true)">예</button><button class="qbtn qbtn-no" onclick="answer(false)">아니오</button></div>`;
+  el.appendChild(card);
+}
+function showResult(num){
+  const el=document.getElementById("quiz");el.innerHTML="";renderTrail(el);
+  const r=results[num];const rc=document.createElement("div");rc.className="result-card";
+  rc.innerHTML=`<div class="badge" style="background:${r.bg};color:${r.color}">${r.badge}</div><div class="result-title">${r.name}</div><div class="result-desc">${r.desc}</div><ul class="result-tips">${r.tips.map(t=>`<li>${t}</li>`).join("")}</ul><button class="reset-btn" onclick="reset()">↩ 처음부터 다시하기</button>`;
+  el.appendChild(rc);
+}
+function answer(isYes){
+  const q=getQ(current);history.push({ans:isYes?"예":"아니오"});
+  const next=isYes?q.yes:q.no;
+  if(typeof next==="string"){current=next;render();}else{current=null;showResult(next.result);}
+}
+function reset(){history=[];current="q1";render();}
+render();
+</script>
+</body>
+</html>
